@@ -4,12 +4,13 @@
 #
 Name     : pypi-pathtools
 Version  : 0.1.2
-Release  : 1
+Release  : 2
 URL      : https://files.pythonhosted.org/packages/e7/7f/470d6fcdf23f9f3518f6b0b76be9df16dcc8630ad409947f8be2eb0ed13a/pathtools-0.1.2.tar.gz
 Source0  : https://files.pythonhosted.org/packages/e7/7f/470d6fcdf23f9f3518f6b0b76be9df16dcc8630ad409947f8be2eb0ed13a/pathtools-0.1.2.tar.gz
 Summary  : File system general utilities
 Group    : Development/Tools
 License  : MIT
+Requires: pypi-pathtools-license = %{version}-%{release}
 Requires: pypi-pathtools-python = %{version}-%{release}
 Requires: pypi-pathtools-python3 = %{version}-%{release}
 BuildRequires : buildreq-distutils3
@@ -18,6 +19,14 @@ BuildRequires : buildreq-distutils3
 =========
         
         Pattern matching and various utilities for file systems paths.
+
+%package license
+Summary: license components for the pypi-pathtools package.
+Group: Default
+
+%description license
+license components for the pypi-pathtools package.
+
 
 %package python
 Summary: python components for the pypi-pathtools package.
@@ -50,7 +59,7 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1653350330
+export SOURCE_DATE_EPOCH=1656389343
 export GCC_IGNORE_WERROR=1
 export AR=gcc-ar
 export RANLIB=gcc-ranlib
@@ -74,6 +83,8 @@ popd
 %install
 export MAKEFLAGS=%{?_smp_mflags}
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/package-licenses/pypi-pathtools
+cp %{_builddir}/pathtools-0.1.2/LICENSE %{buildroot}/usr/share/package-licenses/pypi-pathtools/975101182cd63b5ca09406e47f151df2b19056ef
 python3 -tt setup.py build  install --root=%{buildroot}
 echo ----[ mark ]----
 cat %{buildroot}/usr/lib/python3*/site-packages/*/requires.txt || :
@@ -86,10 +97,14 @@ export FCFLAGS="$FCFLAGS -m64 -march=x86-64-v3 "
 export LDFLAGS="$LDFLAGS -m64 -march=x86-64-v3 "
 python3 -tt setup.py build install --root=%{buildroot}-v3
 popd
-/usr/bin/elf-move.py avx2 %{buildroot}-v3 %{buildroot}/usr/share/clear/optimized-elf/ %{buildroot}/usr/share/clear/filemap/filemap-%{name}
+/usr/bin/elf-move.py avx2 %{buildroot}-v3 %{buildroot} %{buildroot}/usr/share/clear/filemap/filemap-%{name}
 
 %files
 %defattr(-,root,root,-)
+
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/pypi-pathtools/975101182cd63b5ca09406e47f151df2b19056ef
 
 %files python
 %defattr(-,root,root,-)
